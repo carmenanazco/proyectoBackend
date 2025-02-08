@@ -1,5 +1,4 @@
 import {Router} from 'express';
-//import {v4 as uuidv4} from 'uuid'
 import ProductManager  from '../fileManager/productManager.js';
 
 
@@ -9,18 +8,16 @@ const productManager = new ProductManager();
 /** Método GET: PARA OBTENER TODOS LOS RECURSOS
  * Retornar todos los productos
  */
-router.get('/', (req, res) => {
-    const products = productManager.leerProductos();
-    res.json({products})
+router.get('/', async(req, res) => {
+    res.send(await productManager.leerProductos())
 })
-
 
 /** Método GET: PARA OBTENER UN RECURSO
  * Retornar un producto según su ID .get(/:id)
  */
-router.get('/:id', (req, res) => {
+router.get('/:id', async(req, res) => {
     const productId = req.params.id;
-    const productBuscado = productManager.leerUnProducto(productId);
+    const productBuscado = await productManager.leerUnProducto(productId);
     res.json(productBuscado)
 })
 
@@ -29,26 +26,12 @@ router.get('/:id', (req, res) => {
  * Crear un producto
  */
 
-
-router.post('/api/product', (req,res) =>{
-    const {title, description, code, price, stock, category, thumbnails} = req.body;
-
-    if(!product.title || !product.description || !product.code || !product.price || !product.status || !product.stock || !product.category){
+router.post('/', async(req,res) =>{
+    const nuevoProducto = req.body;
+    if(!nuevoProducto.title || !nuevoProducto.description || !nuevoProducto.code || !nuevoProducto.price || !nuevoProducto.stock || !nuevoProducto.category){
         return res.status(400).json({error: 'Incomplete values'});
     }
-    
-    const newProduct = {
-        id: (productManager.length + 1).toString(),
-        title,
-        description,
-        code,
-        price,
-        stock,
-        category,
-        thumbnails
-    };
-
-    productManager.crearProducto(newProduct);
+    res.send(await productManager.crearProducto(nuevoProducto))
 });
 
 
@@ -56,32 +39,20 @@ router.post('/api/product', (req,res) =>{
  * Actualizar un producto
  */
 
-
-
-router.put('/api/product/:id', (req, res) =>{
-
+router.put('/:id', async(req, res) =>{
     const productId = req.params.id;
-    const {title, description, code, price, stock, category, thumbnails} = req.body;
-
-    const productUpdated = {
-        title,
-        description,
-        code,
-        price,
-        stock,
-        category,
-        thumbnails};
-
-    productManager.actualizarProducto(productId, productUpdated )
+    const productUpdated = req.body;
+    res.send(await productManager.actualizarProducto(productId, productUpdated));
 });
+
 
 /** Método DELETE: PARA ELIMINAR UN RECURSO
  * Eliminar un producto
  */
 
-router.delete('/api/product:id', (req, res) => {
+router.delete('/:id', async(req, res) => {
     const productId = req.params.id;
-    productManager.eliminarProducto(productId)
+    res.send(await productManager.eliminarProducto(productId))
 
     res.status(204).json({message: "Producto eliminado"});
 })
