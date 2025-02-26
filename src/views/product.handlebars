@@ -1,0 +1,20 @@
+<div class="btnDetalle">
+    <a href="/product" class="boton">⬅️ Volver a la tienda</a>
+</div>
+
+<div>
+    <div class="detalle">
+        <h2>{{product.title}} </h2>
+        <div>
+            <img src={{product.thumbnail}} alt={{product.description}} class="imgDetalle">
+            <p>Categoria: {{product.category}}</p>
+            <p>Descripcion: {{product.description}} </p>
+            <p>Precio: ${{product.price}} </p>
+            <p>Codigo: {{product.code}} </p>
+            <p>Stock: {{product.stock}} </p>
+            <form action="/api/carts/{{product._id}}" method="POST">
+                <button class="boton" type="submit">🛒</button>
+            </form>
+        </div>
+    </div>
+</div>        

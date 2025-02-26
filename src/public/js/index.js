@@ -34,38 +34,28 @@ form.addEventListener("submit",(e) => {
 
 
 socket.on('loadProduct', (products) =>{
-        console.log("me ejecute load")
+    lista.innerHTML = ''; 
     products.forEach( (product) => {
-        cargarProducto(product);
+    cargarProducto(product);
     })
 })
 
 socket.on('nuevoProducto', (product) =>{
-    console.log("me ejecute")
-
+    lista.innerHTML = ''; 
     cargarProducto(product);
 })
 
 function cargarProducto(product){
-    let divConten = document.createElement("div")
-    let h2Title = document.createElement("h2")
-    let divCard = document.createElement("div")
-    let pCat = document.createElement("p")
-    let pDescr = document.createElement("p")
-    let p = document.createElement("p")
-    let button = document.createElement('button')
+    let clon = document.querySelector('template').content.cloneNode(true)
+    clon.querySelector('h2').innerText = product.title
+    clon.querySelectorAll('p')[0].innerText += product.category
+    clon.querySelectorAll('p')[1].innerText += product.description
+    clon.querySelectorAll('p')[2].innerText += product.price
 
-    divConten.classList.value = 'contenedor'
-    divCard.classList.value = 'card'
 
-    h2Title.innerText = `${product.title}`
-    pCat.innerText = `Categoria ${product.category}`
-    pDescr.innerText = `Description ${product.description}`
-    p.innerText = `Precio ${product.price}`
-
-    button.innerText = 'Eliminar'
-
-    divCard.append(h2Title,pCat,pDescr,p,button)
-    divConten.append(divCard)
-    listProducts.append(divConten)
+    clon.querySelector('button').addEventListener('click', () => {
+        socket.emit('deleteProduct', product.id);
+    } )
+    lista.appendChild(clon)
 }
+

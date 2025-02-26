@@ -1,28 +1,22 @@
 import { Router } from "express";
-import ProductManager  from '../fileManager/productManager.js';
 
 const router = Router();
-const productManager = new ProductManager();
 
-router.get('/', async(req, res) =>{
-    const products=await productManager.leerProductos()
-    res.render('index', {
-        products,
-        style: "index.css"
-    });
+router.get('/', (req,res) => {
+    res.render('index');
+})
 
-}) 
+router.get('/crearProducto', (req,res) => {
+    res.render('newProduct');
+})
+
 
 router.get('/realtimeproducts', async(req, res) =>{
 
-    const products=await productManager.leerProductos()
     res.render('realtimeproducts', {
-        products,
-        style: "index.css"
     });
     
 }) //renderizamos la vista realtimeproducts.handlebars
-
 
 
 export default router;

@@ -1,0 +1,92 @@
+<div class="buscar">
+    <form action="/product/buscar/" method="GET">
+    <div> 
+        <input type="text" name="q" placeholder="Buscar productos" value="{{query}}">
+        <input type="submit" value="🔍" class="boton">
+    </div>
+        
+    <div>
+        <h3>Categorías:</h3>
+        <div class="filtros">
+            <div>
+                <input type="checkbox" id="figuras" name="category" value="figuras">
+                <label for="figuras">Figuras</label>
+            </div>
+            <div>
+                <input type="checkbox" id="resinados" name="category" value="resinados">
+                <label for="resinados">Resinados</label>
+            </div>
+
+            <div>
+                <input type="checkbox" id="lamparas" name="category" value="lamparas">
+                <label for="lamparas">Lamparas</label>
+            </div>
+        </div>
+        <input type="submit" value="Aplicar filtros" class="boton">
+    </div>
+
+    <div>
+        <h3>Ordenar por:</h3>
+        <select name="orden">
+            <option value="">Seleccionar</option>
+            <option value="precio_asc" {{#if (eq orden "precio_asc")}}selected{{/if}}>Precio (menor a mayor)</option>
+            <option value="precio_desc" {{#if (eq orden "precio_desc")}}selected{{/if}}>Precio (mayor a menor)</option>
+            <option value="nombre_asc" {{#if (eq orden "nombre_asc")}}selected{{/if}}>Nombre (A-Z)</option>
+            <option value="nombre_desc" {{#if (eq orden "nombre_desc")}}selected{{/if}}>Nombre (Z-A)</option>
+        </select>
+    </div> 
+    
+    </form>
+</div>
+<h2>Productos</h2>
+
+{{#if query}}
+    <div class="btnDetalle">
+        <a href="/product" class="boton">Todos los productos</a>
+        <span class="">➡️</span>
+        <span class="botonS">{{query}} </span>
+    </div>
+{{/if}}
+
+{{#if category}}
+<h3>Filtros</h3>
+    <div class="btnDetalle">
+        <span class="botonS">{{category}}</span>
+    </div>
+{{/if}}
+
+<div class="contenedor">
+    {{#each products}}
+        <div class="card">
+            <img src={{this.thumbnail}} alt={{this.description}} class="imgCard">
+            
+            <div class="textCard">
+                <h3>{{this.title}} </h3>
+                <p>Precio: ${{this.price}} </p>
+                
+            </div>
+            <div class="botonesCard">
+                <a href="/product/{{this._id}}" class="boton">Ver detalle</a>
+                <form action="/api/carts/{{this._id}}" method="POST">
+                    <button class="boton" type="submit">Agregar al Carrito</button>
+                </form>
+                <form action="product/{{this._id}}?_method=DELETE" method="POST">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="button-error" type="submit">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    {{/each}}
+
+<div class="paginacion">
+    {{#if (gt page 1)}}
+        <a href="?q={{query}}&categoria={{category}}&orden={{orden}}&page={{subtract page 1}}&limit=5">⏪ Anterior</a>
+    {{/if}}
+
+    <span>Página {{page}} de {{totalPages}}</span>
+
+    {{#if (lt page totalPages)}}
+        <a href="?q={{query}}&categoria={{category}}&orden={{orden}}&page={{sum page 1}}&limit=5">Siguiente ⏩</a>
+    {{/if}}
+</div>
+</div>

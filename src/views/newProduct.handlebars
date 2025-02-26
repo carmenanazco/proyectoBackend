@@ -1,9 +1,7 @@
-
-<h2>Productos</h2>
 <div class="contenedorForm">
     <h2>Crear productos</h2>
     <div class="formulario">
-        <form action="" method="post">
+        <form action="/product" method="POST" enctype="multipart/form-data">
             <div class="input">
                 <label for="title">Titulo:</label>
                 <input type="text" id="title" name="title" required>
@@ -34,42 +32,15 @@
                 <input type="text" id="category" name="category" required>
             </div>
             
+            <div class="input">
+                <input type="file" id="file" name="file">
+            </div>
+                
             <div>
-                <input type="submit" value="Cargar">
+                <input type="submit" value="Cargar" class="boton">
             </div>
             
         </form>
     </div>
 </div>
-    
 
-<div>
-    <h2>Todos los productos</h2>
-    <div id="lista" class="contenedor"></div>
-</div>
-
-
-
-    <template>
-        <div>
-            <div class="card" style="width: 16rem;">
-                <h2></h2>
-                <div>
-                    <p>Categoria: </p>
-                    <p>Descripción: </p>
-                    <p>Precio: $</p>
-
-                    <button>Eliminar</button>
-                </div>
-            </div>
-        </div>
-    </template>
-
-
-
-
-
-
-<script src="/socket.io/socket.io.js"></script> 
-<script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-<script src="/js/index.js"></script> 

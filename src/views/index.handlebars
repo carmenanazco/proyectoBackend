@@ -1,19 +1,8 @@
-<h1>Productos</h1>
-<div class="contenedor">
-
-    {{#each products}}
-    <div>
-        <div class="card">
-            <h2>{{this.title}} </h2>
-            <div>
-                <p>Categoria: {{this.category}}</p>
-                <p>Descripcion: {{this.description}} </p>
-                <p>Precio: ${{this.price}} </p>
-                <p>Codigo: {{this.code}} </p>
-                <p>Stock: {{this.stock}} </p>
-            </div>
-        </div>
+<div class="index">
+    <h1>Bienvenidos</h1>
+    <div class="indexContenedor">
+        <a href="/crearProducto" class="boton">Crear un producto</a>
+        <a href="/product" class="boton">Listado de productos</a>
+        <a href="/api/carts" class="boton">Carrito</a>
     </div>
-        
-    {{/each}}
 </div>

@@ -1,0 +1,52 @@
+<div class="container">
+    <h2>Carrito</h2>
+
+    <div>
+        <div class="headerCart">
+            <p class="titleCart">Producto</p>
+            <p>Precio</p>
+            <p>Cantidad</p>
+            <p>Subtotal</p>
+        </div>
+    {{#each carts}}
+        <div class="cart">
+            <div class="cartContainer">
+                <h3 class="titleCart">{{this.product.title}}</h3>
+            </div>
+            <div class="cartContainer">
+                <p class="itemCart"> ${{this.product.price}}</p>
+            </div>
+
+            <div class="cartContainer">
+                <form action="carts/{{this._id}}/products/{{this.product._id}}?_method=PUT" method="POST">
+                    <input type="number" name="cantidad" value="{{this.quantity}}" min="1" class="cantidad">
+                    <input type="hidden" name="_method" value="PUT">
+                </form>  
+            </div>
+
+            <div class="cartContainer">
+                <p class="itemCart">${{this.subtotal}}</p>
+                <form action="carts/{{this.product._id}}/products/{{this.product._id}}?_method=DELETE" method="POST">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn" type="submit">❌</button>
+                </form>   
+            </div> 
+        </div>
+    {{/each}}
+
+<div class="total">
+    <p>Total: ${{total}} </p>
+</div>
+<div class="btnCarts">
+    <form action="carts/{{idCarts}}?_method=DELETE" method="POST">
+        <input type="hidden" name="_method" value="DELETE">
+        <button class="boton" type="submit">Vaciar Carrito </button>
+    </form> 
+    
+</div>
+</div>
+
+
+<a href="/product" class="boton">Volver a la tienda</a>
+
+</div>
