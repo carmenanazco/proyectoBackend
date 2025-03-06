@@ -10,11 +10,11 @@ import buscarRouter from './routes/buscar.router.js'
 import ProductManager  from './fileManager/productManager.js';
 import mongoose from 'mongoose';
 import dotenv from "dotenv";
+import productModel from './models/product.model.js';
 const exphbs = handlebars
 
 dotenv.config();
 const URIMongoDB = process.env.URIMONGO;
-
 
 const app = express();
 
@@ -33,7 +33,8 @@ const hbs = exphbs.create({
         gt: (a, b) => a > b,
         lt: (a, b) => a < b,
         sum: (a, b) => a + b,
-        subtract: (a, b) => a - b
+        subtract: (a, b) => a - b,
+        includes: (array, value) => Array.isArray(array) && array.includes(value)
     }
 });
 
@@ -43,23 +44,29 @@ const httpServer = app.listen(8080, ()=>{
     console.log(`El servidor se encuentra escuchando en el puerto 8080`);
 });
 
+const environmet= async() =>{
+    await mongoose.connect(URIMongoDB)
+    let products = await productModel.paginate(
+       // {category: "figuras"},
+        //{limit: 10, page: 1}
+    )
+    //console.log(products)
+    // .then(()=> console.log("Conexion a base de datos exitosa"))
+    // .catch((error)=> {
+    //     console.error("Error en conexion: ", error)
+    //     process.exit();
+    // })
+}
 
-mongoose.connect(URIMongoDB)
-    .then(()=> console.log("Conexion a base de datos exitosa"))
-    .catch((error)=> {
-        console.error("Error en conexion: ", error)
-        process.exit();
-    })
+environmet();
+
 
 app.use(methodOverride('_method'));
 
-
-
-//app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 app.use('/', viewsRouter)
 app.use('/product', productRouter);
-app.use('/product/buscar', buscarRouter);
+app.use('/buscar', buscarRouter);
 
 
 

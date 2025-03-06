@@ -43,7 +43,10 @@ router.get('/:id', async(req, res) => {
 
 router.post('/', uploader.single('file') ,async(req,res) =>{
     try{
+
         const newproduct = new productModel(req.body);
+        console.log(newproduct)
+
         newproduct.thumbnail = `/img/${req.file.originalname}`;
 
         if(!newproduct.title || !newproduct.description || !newproduct.code || !newproduct.price || !newproduct.stock || !newproduct.category){

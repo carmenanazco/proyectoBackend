@@ -1,60 +1,71 @@
-<div class="buscar">
-    <form action="/product/buscar/" method="GET">
-    <div> 
+<div class="contenedorBuscar">
+    <form action="/buscar" method="GET">
+    <div class="buscar"> 
         <input type="text" name="q" placeholder="Buscar productos" value="{{query}}">
         <input type="submit" value="🔍" class="boton">
     </div>
         
-    <div>
-        <h3>Categorías:</h3>
+    <div  class="contenedorFiltros">
         <div class="filtros">
-            <div>
-                <input type="checkbox" id="figuras" name="category" value="figuras">
-                <label for="figuras">Figuras</label>
-            </div>
-            <div>
-                <input type="checkbox" id="resinados" name="category" value="resinados">
-                <label for="resinados">Resinados</label>
-            </div>
+                    <h3>Categorías:</h3>
 
-            <div>
-                <input type="checkbox" id="lamparas" name="category" value="lamparas">
-                <label for="lamparas">Lamparas</label>
-            </div>
+            <label>
+                <input type="checkbox" id="figuras" name="category" value="figuras"
+                {{#if (includes category "figuras")}}checked{{/if}}>
+                Figuras
+            </label>
+            <label>
+                <input type="checkbox" id="resinados" name="category" value="resinados"
+                {{#if (includes category "resinados")}}checked{{/if}}>
+                Resinados
+            </label>
+            <label>
+                <input type="checkbox" id="lamparas" name="category" value="lamparas"
+                {{#if (includes category "lamparas")}}checked{{/if}}>
+                Lamparas
+            </label>
         </div>
-        <input type="submit" value="Aplicar filtros" class="boton">
-    </div>
 
-    <div>
-        <h3>Ordenar por:</h3>
-        <select name="orden">
-            <option value="">Seleccionar</option>
-            <option value="precio_asc" {{#if (eq orden "precio_asc")}}selected{{/if}}>Precio (menor a mayor)</option>
-            <option value="precio_desc" {{#if (eq orden "precio_desc")}}selected{{/if}}>Precio (mayor a menor)</option>
-            <option value="nombre_asc" {{#if (eq orden "nombre_asc")}}selected{{/if}}>Nombre (A-Z)</option>
-            <option value="nombre_desc" {{#if (eq orden "nombre_desc")}}selected{{/if}}>Nombre (Z-A)</option>
-        </select>
-    </div> 
-    
+        <div>
+            <h3>Ordenar por:</h3>
+            <select name="orden">
+                <option value="">Seleccionar</option>
+                <option value="precio_asc" {{#if (eq orden "precio_asc")}}selected{{/if}}>Precio (menor a mayor)</option>
+                <option value="precio_desc" {{#if (eq orden "precio_desc")}}selected{{/if}}>Precio (mayor a menor)</option>
+                <option value="nombre_asc" {{#if (eq orden "nombre_asc")}}selected{{/if}}>Nombre (A-Z)</option>
+                <option value="nombre_desc" {{#if (eq orden "nombre_desc")}}selected{{/if}}>Nombre (Z-A)</option>
+            </select>
+        </div> 
+        <div class="">
+                <input type="submit" value="Aplicar filtros" class="boton">
+                <button id="resetFiltros" class="boton">Restablecer Filtros</button>
+        </div>
+    </div>
     </form>
 </div>
 <h2>Productos</h2>
 
-{{#if query}}
+
+{{#if isFilter}}
+<h3>Filtros</h3>
     <div class="btnDetalle">
         <a href="/product" class="boton">Todos los productos</a>
         <span class="">➡️</span>
-        <span class="botonS">{{query}} </span>
+        {{#if query}}<span class="botonS">{{query}}</span>{{/if}}
+        {{#if category}}<span class="botonS">{{category}}</span>{{/if}}
     </div>
 {{/if}}
 
-{{#if category}}
-<h3>Filtros</h3>
-    <div class="btnDetalle">
-        <span class="botonS">{{category}}</span>
-    </div>
-{{/if}}
-
+<div class="divPaginas">
+    <p>Total de productos: {{info.totalDocs}} </p>
+    <label for="cantidadPorPagina">Cantidad por pagina:</label>
+    <select id="cantidadPorPagina" onchange="cambiarCantidad()">
+        <option value="2" {{#if (eq limit 2)}}selected{{/if}}>2 productos</option>
+        <option value="1" {{#if (eq limit 1)}}selected{{/if}}>1 productos</option>
+        <option value="15" {{#if (eq limit 15)}}selected{{/if}}>15 productos</option>
+        <option value="20" {{#if (eq limit 20)}}selected{{/if}}>20 productos</option>
+    </select>
+</div>
 <div class="contenedor">
     {{#each products}}
         <div class="card">
@@ -77,16 +88,17 @@
             </div>
         </div>
     {{/each}}
-
+</div>
 <div class="paginacion">
-    {{#if (gt page 1)}}
-        <a href="?q={{query}}&categoria={{category}}&orden={{orden}}&page={{subtract page 1}}&limit=5">⏪ Anterior</a>
+    {{#if (gt info.page 1)}}
+        <a href="?q={{query}}&categoria={{category}}&orden={{orden}}&page={{subtract info.page 1}}&limit={{info.limit}}">⏪ Anterior</a>
     {{/if}}
 
-    <span>Página {{page}} de {{totalPages}}</span>
+    <span>Página {{info.page}} de {{info.totalPages}}</span>
 
-    {{#if (lt page totalPages)}}
-        <a href="?q={{query}}&categoria={{category}}&orden={{orden}}&page={{sum page 1}}&limit=5">Siguiente ⏩</a>
+    {{#if (lt info.page info.totalPages)}}
+        <a href="?q={{query}}&categoria={{category}}&orden={{orden}}&page={{sum info.page 1}}&limit={{info.limit}}">Siguiente ⏩</a>
     {{/if}}
-</div>
-</div>
+</div> 
+
+<script src="/js/filtrar.js"></script>
