@@ -2,29 +2,21 @@ import express from 'express';
 import handlebars from 'express-handlebars';
 import methodOverride from 'method-override';
 import __dirname from './utils.js'
-import { Server } from 'socket.io';
+import cookieParser from 'cookie-parser';
 import productRouter from './routes/product.router.js';
 import cartRouter from './routes/cart.router.js';
 import viewsRouter from './routes/views.router.js'
 import buscarRouter from './routes/buscar.router.js'
-import ProductManager  from './fileManager/productManager.js';
-import mongoose from 'mongoose';
-import dotenv from "dotenv";
-import productModel from './models/product.model.js';
+import sessionsRouter from './routes/sessions.router.js'
+import { conectDB, configObject } from './config/index.js'
+import { initializePassport } from'./config/passport.config.js';
+import passport from 'passport'
+
+//import dotenv from "dotenv";
+
 const exphbs = handlebars
-
-dotenv.config();
-const URIMongoDB = process.env.URIMONGO;
-
 const app = express();
-
-app.engine('handlebars', handlebars.engine());
-app.set('views', __dirname + '/views');
-app.set('view engine', 'handlebars')
-
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-app.use(express.static(__dirname+'/public'));
+const PORT = configObject.port
 
 
 const hbs = exphbs.create({
@@ -38,56 +30,31 @@ const hbs = exphbs.create({
     }
 });
 
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(express.static(__dirname+'/public'));
+app.use(cookieParser())
 
+
+app.engine('handlebars', handlebars.engine());
 app.engine("handlebars", hbs.engine);
-const httpServer = app.listen(8080, ()=>{
-    console.log(`El servidor se encuentra escuchando en el puerto 8080`);
-});
 
-const environmet= async() =>{
-    await mongoose.connect(URIMongoDB)
-    let products = await productModel.paginate(
-       // {category: "figuras"},
-        //{limit: 10, page: 1}
-    )
-    //console.log(products)
-    // .then(()=> console.log("Conexion a base de datos exitosa"))
-    // .catch((error)=> {
-    //     console.error("Error en conexion: ", error)
-    //     process.exit();
-    // })
-}
-
-environmet();
-
+app.set('views', __dirname + '/views');
+app.set('view engine', 'handlebars')
 
 app.use(methodOverride('_method'));
+
+initializePassport()
+app.use(passport.initialize())
+
+conectDB()
 
 app.use('/api/carts', cartRouter);
 app.use('/', viewsRouter)
 app.use('/product', productRouter);
 app.use('/buscar', buscarRouter);
+app.use('/api/sessions', sessionsRouter)
 
-
-
-const productManager = new ProductManager();
-
-const socketServer = new Server(httpServer);
-const products=await productManager.leerProductos()
-
-
-socketServer.on('connection', (socket) =>{   
-
-    socket.emit('loadProduct', products);
-    socket.on('newProduct', async(product)=>{
-        const newProduct = product
-        await productManager.crearProducto(newProduct)
-        socketServer.emit('nuevoProducto', newProduct);
-    }) 
-    socket.on('deleteProduct', async(id) =>{
-        await productManager.eliminarProducto(id)
-        socket.emit('loadProduct', products);
-    })
-})
-
-
+app.listen(PORT, ()=>{
+    console.log(`escuchando server en puerto ${PORT}`)    
+});

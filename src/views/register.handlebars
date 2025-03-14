@@ -1,0 +1,31 @@
+<div class="contenedorForm">
+    <h2>Register</h2>
+    <div class="formulario">
+        <form action="/api/sessions/register" method="POST">
+            <div class="input">
+                <label for="first_name">Nombre: </label>
+                <input type="text" name="first_name"  id="first_name" required>
+            </div>
+
+            <div class="input">
+                <label for="last_name">Apellido: </label>
+                <input type="text" name="last_name"  id="last_name" required>
+            </div>
+
+            <div class="input">
+                <label for="email">E-mail: </label>
+                <input type="email" name="email"  id="email" placeholder="a@example.com" required>
+            </div>
+
+            <div class="input">
+                <label for="password">Contraseña: </label>
+                <input type="password" name="password"  id="password" required>
+            </div>
+
+            <div class="botonesLog">
+                <input type="submit" value="Registrarse" class="boton">
+                <a href="/login" class="boton">Login</a>
+            </div>
+        </form>
+    </div>
+</div>

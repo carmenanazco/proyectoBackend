@@ -1,0 +1,30 @@
+<div class="btnDetalle">
+    <a href="/editProductos" class="boton">⬅️ Volver a la tienda</a>
+</div>
+
+<div>
+    <div class="detalle">
+        <form action="/product/{{product._id}}?_method=PUT" method="POST">
+            <input type="text" name="title" value="{{product.title}}">
+            <div>
+                <img src={{product.thumbnail}} alt={{product.description}} class="imgDetalle">
+                <p>Categoria: </p>
+                <input type="text" name="category" value="{{product.category}}" >
+
+                <p>Descripcion: </p>
+                <input type="text" name="description" value="{{product.description}}" >
+
+                <p>Precio: </p>
+                <input type="number" name="price" value="{{product.price}}" >
+
+                <p>Codigo: </p>
+                <input type="number" name="code" value="{{product.code}}" >
+
+                <p>Stock: </p>
+                <input type="number" name="stock" value="{{product.stock}}" >
+            </div>
+            <input type="hidden" name="_method" value="PUT">
+            <button class="boton" type="submit">Guardar cambios</button>
+        </form>      
+    </div>
+</div>        

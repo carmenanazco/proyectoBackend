@@ -1,8 +1,21 @@
 <div class="index">
     <h1>Bienvenidos</h1>
+    <h3>{{usuario.first_name}}</h3>
+
     <div class="indexContenedor">
-        <a href="/crearProducto" class="boton">Crear un producto</a>
+        {{#if isAdmin}}
+            <a href="/crearProducto" class="boton">Crear un producto</a>
+            <a href="/editProductos" class="boton">Editar productos</a>
+
+        {{/if}}
+        
         <a href="/buscar" class="boton">Listado de productos</a>
-        <a href="/api/carts" class="boton">Carrito</a>
+        {{#if usuario}}
+            <a href="/api/carts" class="boton">Carrito</a>
+            <a href="/api/sessions/logout" class="boton">Salir</a>
+            {{else}}
+                <a href="/login" class="boton">Ingresar</a>
+                <a href="/register" class="boton">Registrarse</a>
+        {{/if}}
     </div>
 </div>

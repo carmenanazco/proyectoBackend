@@ -1,10 +1,10 @@
-import {Router} from 'express';
-//import ProductManager  from '../fileManager/productManager.js';
-import productModel from '../models/product.model.js';
-import { uploader } from '../utilsMulter.js';
+import { Router } from 'express';
+import { productModel } from '../models/product.model.js';
+import { uploader } from '../utils/utilsMulter.js';
+import { passportCall } from '../middlewares/passportCall.js';
+import { authorization } from '../middlewares/authorization.middleware.js';
 
 const router = Router();
-//const productManager = new ProductManager();
 
 /** Método GET: PARA OBTENER TODOS LOS RECURSOS
  * Retornar todos los productos
@@ -16,7 +16,6 @@ router.get('/', async(req, res) => {
     }catch(error){
         return res.render('error', {error:"Error al mostrar productos"});
     }
-    //res.send(await productManager.leerProductos())
 });
 
 /** Método GET: PARA OBTENER UN RECURSO
@@ -43,7 +42,6 @@ router.get('/:id', async(req, res) => {
 
 router.post('/', uploader.single('file') ,async(req,res) =>{
     try{
-
         const newproduct = new productModel(req.body);
         console.log(newproduct)
 
@@ -63,17 +61,33 @@ router.post('/', uploader.single('file') ,async(req,res) =>{
 /** Método PUT: PARA ACTUALIZAR UN RECURSO
  * Actualizar un producto
  */
+//Ruta protegida
+router.get('/update/:id', async(req, res) => {
+    try{
+        const product = await productModel.findById(req.params.id);
+        if(!product){
+            return res.render('error', {error: "Producto no encontrado"});
+        }
+        res.render('updateProduct', {product: product.toObject()});
+    }catch(error){
+        console.log(req.query.q)
+        return res.render('error', {error:"Error al obtener el producto solicitado"});
+        }
+})
 
 router.put('/:id', async(req, res) =>{
     try{
         const uid = await productModel.findById(req.params.id);
-        const productUpdated= req.body;
+        const productUpdated = req.body;
 
         if (!productUpdated.title || !productUpdated.category || !productUpdated.description || !productUpdated.code || !productUpdated.price || !productUpdated.stock) {
             return res.render('error', {error: "Campos incompletos"});
         }
-        let result = await productModel.updateOne({_id:uid}, productUpdated);
-        res.render('product', {product: result.toObject()});
+
+        await productModel.updateOne({_id:uid}, productUpdated);
+        //await productUpdated.save();
+        console.log(productUpdated);
+        res.redirect('/editProductos');
     }catch(error){
         return res.render('error', {error: "Error al actualizar el producto"});
     }
@@ -84,10 +98,9 @@ router.put('/:id', async(req, res) =>{
  * Eliminar un producto
  */
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', passportCall('jwt'), authorization('admin'), async (req, res) => {
     try{
         const productDel = await productModel.findByIdAndDelete(req.params.id);
-        console.log(productDel)
         if(!productDel){ 
             return res.render('error', {error: "No se encontró el producto a eliminar"})
         }

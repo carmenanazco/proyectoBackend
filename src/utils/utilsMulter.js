@@ -1,5 +1,5 @@
 import multer from 'multer';
-import __dirname from './utils.js';
+import __dirname from '../utils.js';
 
 //Antes de iniciar multer, debemos configurar dónde se almacenaran los archivos
 const storage = multer.diskStorage({

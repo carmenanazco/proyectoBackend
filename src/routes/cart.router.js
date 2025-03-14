@@ -1,10 +1,13 @@
 import {Router} from 'express';
-import cartModel from '../models/cart.model.js';
-import productModel from '../models/product.model.js';
+import {cartModel} from '../models/cart.model.js';
+import {productModel} from '../models/product.model.js';
+import { passportCall } from '../middlewares/passportCall.js';
+import { userModel } from '../models/users.model.js';
 
 const router = Router();
 
-router.get('/', async(req, res) => {
+/*Mostrar todos los productos del carrito*/
+router.get('/', passportCall('jwt'), async(req, res) => {
     try{
         let carts = await cartModel.findOne().populate('products.product');
         if(!carts || carts.products.length==0){
@@ -19,6 +22,7 @@ router.get('/', async(req, res) => {
     }
 });
 
+/*Mostrar un producto del carrito segun su id*/
 
 router.get('/id', async(req, res) => {
     try{
@@ -29,12 +33,16 @@ router.get('/id', async(req, res) => {
     }
 });
 
+
+/*Agregar productos al carrito segun id*/
+
 router.post('/:id', async(req,res) =>{
     try{
         const productId = req.params.id;
         let carts = await cartModel.findOne()
         if(!carts){
             carts = new cartModel({products: []});
+            userModel.carts.push({cart: cart._id})
         }
         const productInCart = carts.products.find(p=>p.product.equals(productId))
         const producto = await productModel.findById(productId);
@@ -55,6 +63,7 @@ router.post('/:id', async(req,res) =>{
     }
 })
 
+/**Eliminar productos del carrito */
 router.delete('/:cid/products/:pid', async (req, res) => {
     try{
         const productId = req.params.cid;
@@ -70,6 +79,7 @@ router.delete('/:cid/products/:pid', async (req, res) => {
     }
 })
 
+/**Eliminar todo el carrito */
 router.delete('/:cid', async (req, res) => {
     try{
         const idCarrito = req.params.cid;
@@ -81,6 +91,7 @@ router.delete('/:cid', async (req, res) => {
     }
 })
 
+/**Modificar cantidades de productos en el carrito */
 router.put('/:cid/products/:pid', async(req, res) =>{
     try{
         const {cid, pid} = req.params;        
