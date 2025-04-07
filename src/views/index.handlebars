@@ -2,14 +2,14 @@
     <h1>Bienvenidos</h1>
     <h3>{{usuario.first_name}}</h3>
 
-    <div class="indexContenedor">
+    <div id="red" class="indexContenedor">
         {{#if isAdmin}}
             <a href="/crearProducto" class="boton">Crear un producto</a>
             <a href="/editProductos" class="boton">Editar productos</a>
 
         {{/if}}
         
-        <a href="/buscar" class="boton">Listado de productos</a>
+        <a id="red" href="/buscar" class="boton">Listado de productos</a>
         {{#if usuario}}
             <a href="/api/carts" class="boton">Carrito</a>
             <a href="/api/sessions/logout" class="boton">Salir</a>

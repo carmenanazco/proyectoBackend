@@ -1,9 +1,15 @@
 import { Router } from "express";
 import { passportCall } from '../middlewares/passportCall.js'
 import { authorization } from '../middlewares/authorization.middleware.js'
-import {productModel} from '../models/product.model.js';
+import {productModel} from '../daos/Mongo/models/product.model.js';
+import ViewsController from "../controllers/views.controllers.js";
 
 const router = Router();
+const {home, login, register} = new ViewsController()
+
+router.get('/', home)
+router.get('/login', login)
+router.get('/register', register)
 
 router.get('/', (req,res) => {
     res.render('index');
@@ -19,16 +25,6 @@ router.get('/editProductos', passportCall('jwt'), authorization('admin'), async(
     res.render('editarProducts', {products: products.map( product => product.toObject())});
 })
 
-// router.get('/', (req, res)=>{
-//     res.render('home', {})
-// })
 
-router.get('/login', (req, res)=>{
-    res.render('login', {})
-})
-
-router.get('/register', (req, res)=>{
-    res.render('register', {})
-})
 
 export default router;

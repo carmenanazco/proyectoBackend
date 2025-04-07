@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken'
-import { configkey } from '../config/passport.config.js'
+import { configObject } from '../config/index.js'
 
 
-const PRIVATE_KEY = configkey.privateKey
+const PRIVATE_KEY = configObject.privateKey
 //genera el token
 export const generateToken = userDataToken => jwt.sign(userDataToken, PRIVATE_KEY, {expiresIn: '1d'})
 

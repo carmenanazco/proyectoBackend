@@ -4,6 +4,8 @@ const usersCollection = 'users'
 const usersSchema = new Schema({
     first_name: String,
     last_name: String,
+    full_name: String,
+    
     email:{
         type: String,
         require: true,
@@ -19,9 +21,7 @@ const usersSchema = new Schema({
         default: 'user'
     },
 
-    carts:{
-        cart: {type: Schema.Types.ObjectId, ref: 'carts'},
-    }
+    carts: {type: Schema.Types.ObjectId, ref: 'carts'}
 })
 
 export const userModel = model(usersCollection, usersSchema)
