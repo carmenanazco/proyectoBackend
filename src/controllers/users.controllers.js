@@ -6,30 +6,57 @@ class UserController{
     }
 
     createUser= async(req, res)=>{
-        const { body } = req
-        const result = await this.usersService(body)
-        
-        
-        res.send({status: 'success', paylad:result})
+        try {
+            const user = await this.usersService.createUser(req.body)
+            res.status(201).json(user)
+        } catch (error) {
+            res.status(500).json({error: "Error al crear el usuario"})
+        }
     }
 
     getUsers= async(req, res)=>{
-        const users = await this.service.getUsers()
-    res.send({status: 'success', paylad: users})
+        try {
+            const users = await this.service.getUsers()
+            res.send({status: 'success', paylad: users})
+        } catch (error) {
+            res.status(500).json({error: "Error al obtener usuarios"})
+        }
     }
 
-    getUser=(req, res)=>{
-        res.send('get user')
+    getUser=async(req, res)=>{
+        try {
+            const user = await this.service.getUser({_id: req.user.uid})
+            if(!user) return res.status(404).json({error: "Error al encontrar el usuario"})
+            res.json(user)
+        } catch (error) {
+            res.status(500).json({error: "Error al obtener perfil"})
+        }
+        
     }
 
-    updateUser=(req, res)=>{
-    res.send('update user')
-}
-
-    deleteUser=(req, res)=>{
-        res.send('delete user')
+    updateUser=async(req, res)=>{
+        try{
+            const updatedUser = await this.service.updateUser(req.user.uid, req.body);
+            if(!updatedUser){
+                return res.render('error', {error: "User no encontrado"});
+            }
+            res.json(updatedUser)
+            //res.redirect('/index');
+        }catch(error){
+            //return res.render('error', {error: "Error al actualizar el usuario"});
+            res.status(500).json({error: "Error al editar perfil"})
+        }
     }
 
+    deleteUser=async(req, res)=>{
+        try {
+            await this.service.deleteUser(req.user.uid)
+            res.send('delete user')
+
+        } catch (error) {
+            res.status(500).json({error: "Error al eliminar usuario"})
+        }
+    }
 }
 
 export default UserController

@@ -6,38 +6,22 @@ import cookieParser from 'cookie-parser';
 import productRouter from './routes/product.router.js';
 import cartRouter from './routes/cart.router.js';
 import viewsRouter from './routes/views.router.js'
-import buscarRouter from './routes/buscar.router.js'
+import enviosRouter from './routes/api/envios.router.js'
+import ticketRouter from './routes/ticket.router.js'
 import sessionsRouter from './routes/api/sessions.router.js'
 import userRouter from './routes/api/users.router.js'
+import paymentRoutes from './routes/payment.router.js'
 import { conectDB, configObject } from './config/index.js'
 import { initializePassport } from'./config/passport.config.js';
 import passport from 'passport'
 import cors from 'cors'
-import nodemailer from 'nodemailer'
+import path from "path";
+import { passportCall } from './middlewares/passportCall.js';
 
 const exphbs = handlebars
 const app = express();
 const PORT = configObject.port
-
-//nodemailer
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth:{
-        user: configObject.user,
-        pass: configObject.pass
-    },
-    tls:{
-        rejectUnauthorized:false
-    }
-})
-
-
-
-
-
+app.use(cookieParser())
 
 
 const hbs = exphbs.create({
@@ -50,12 +34,17 @@ const hbs = exphbs.create({
         includes: (array, value) => Array.isArray(array) && array.includes(value)
     }
 });
-
+app.use(cors({
+    origin: "http://localhost:5501", // 🔹 URL específica del frontend
+    credentials: true,             // 🔹 Permitir envío de cookies
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}))
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(__dirname+'/public'));
-app.use(cookieParser())
-app.use(cors())
+app.use(express.static("public")); 
+
+
 
 app.engine('handlebars', handlebars.engine());
 app.engine("handlebars", hbs.engine);
@@ -65,48 +54,22 @@ app.set('view engine', 'handlebars')
 
 app.use(methodOverride('_method'));
 
+
 initializePassport()
 app.use(passport.initialize())
+
 
 conectDB()
 
 app.use('/', viewsRouter)
-app.use('/product', productRouter);
-app.use('/buscar', buscarRouter);
+app.use('/api/products', productRouter);
+app.use('/api/envios', passportCall('jwt'),enviosRouter);
+app.use('/api/ticket', ticketRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/sessions', sessionsRouter)
 app.use('/api/users', userRouter)
-
-
-app.post('/mail', async (req, res)=>{
-    try {
-        console.log(req.body);
-
-        const { email } = req.body;
-        
-        const result = await transporter.sendMail({
-            from: `Correo de prueba <${configObject.user}>`,
-            to: email,
-            subject: "Imagen enviada",
-            html: `<div>
-            <h1>Imagen enviada</h1>
-            <p>Gracias por utilizar nuestro servicio</p>
-            ${email}
-            </div>`,
-            attachments:[
-                {
-                    filename:"inicial.jpg",
-                    path: "./src/public/img/inicial.jpg",
-                    cid: "inicial",
-                },
-            ],
-        });
-        res.status(200).send("Correo enviado exitosamente")
-    } catch (error) {
-        console.log(error)
-        res.status(500).send("Error al enviar correo"+ error.message)
-    }
-})
+app.use('/api/payments', paymentRoutes)
+app.use("/receipts", express.static(path.join(__dirname, "public/receipts")));
 
 
 

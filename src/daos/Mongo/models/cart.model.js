@@ -9,7 +9,15 @@ const cartSchema = new Schema({
             quantity: {type: Number, default:1},
             subtotal: {type: Number, default:0}
         }
-    ]
+    ],
+    shipping: {
+        type: Number,
+        default: 0
+    },
+    codigoPostal:{
+        type: String,
+        default:""
+    }
 });
 
 cartSchema.pre('find', function(next){

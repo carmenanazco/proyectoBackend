@@ -1,5 +1,5 @@
 <div class="contenedorBuscar">
-    <form action="/buscar" method="GET">
+    <form action="api/products" method="GET">
     <div class="buscar"> 
         <input type="text" name="q" placeholder="Buscar productos" value="{{query}}">
         <input type="submit" value="🔍" class="boton">
@@ -36,7 +36,7 @@
                 <option value="nombre_desc" {{#if (eq orden "nombre_desc")}}selected{{/if}}>Nombre (Z-A)</option>
             </select>
         </div> 
-        <div class="">
+        <div>
                 <input type="submit" value="Aplicar filtros" class="boton">
                 <button id="resetFiltros" class="boton">Restablecer Filtros</button>
         </div>

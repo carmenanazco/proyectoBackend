@@ -13,7 +13,9 @@ const usersSchema = new Schema({
     },
     password: {
         type: String,
-        required: true
+        required: function(){
+            return !this.fromGoogle
+        }
     },
     role:{
         type: String,
@@ -21,7 +23,13 @@ const usersSchema = new Schema({
         default: 'user'
     },
 
-    carts: {type: Schema.Types.ObjectId, ref: 'carts'}
+    carts: {type: Schema.Types.ObjectId, ref: 'carts'},
+    googleId: { type: String },
+    fromGoogle:{
+        type: Boolean,
+        default:false
+    }
+
 })
 
 export const userModel = model(usersCollection, usersSchema)

@@ -6,6 +6,8 @@ const storage = multer.diskStorage({
     //destination hará referencia a la carpeta donde se va a guardar el archivo
     destination: function(req, file,cb){
         cb(null,__dirname+'/public/img') //Especificamos la carpeta en este punto
+        //cb(null, "uploads/"); // Carpeta donde se guardarán las imágenes
+
     },
     //filename hará referencia al nombre final que contendrá el archivo
     filename: function(req, file, cb){
@@ -15,7 +17,6 @@ const storage = multer.diskStorage({
     path: function(req, file, cb){
         cb(null,`/img/${file.originalname}`) 
     },
-
 })
 
 export const uploader = multer({storage});

@@ -4,13 +4,14 @@ import CartController from '../controllers/carts.controllers.js';
 
 const router = Router();
 
-const {createCart, getCarts, getCart, updateCart, deleteCart, deleteCarts}= new CartController
+const {createCart, getCarts, getCart, updateCart, deleteCart, deleteCarts, finalizarCompra}= new CartController
 
-router.get('/', passportCall('jwt'), getCarts);
-router.get('/cid', passportCall('jwt'), getCart);
-router.post('/:cid', passportCall('jwt'), createCart)
-router.put('/:cid/products/:pid', passportCall('jwt'), updateCart);
-router.delete('/:cid/products/:pid', passportCall('jwt'), deleteCart)
-router.delete('/:cid', passportCall('jwt'), deleteCarts)
+router.get('/', passportCall(), getCarts);
+router.get('/:cid', passportCall(), getCart);
+router.post('/', passportCall(), createCart)
+router.put('/', passportCall(), updateCart);
+router.delete('/:pid', passportCall(), deleteCart)
+router.delete('/', passportCall(), deleteCarts)
+router.post('/checkout', passportCall(), finalizarCompra)
 
 export default router

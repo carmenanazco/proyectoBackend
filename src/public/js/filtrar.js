@@ -8,7 +8,7 @@ function cambiarCantidad() {
     }
 
 
-    document.getElementById("resetFiltros").addEventListener("click", function () {
-        window.location.href = "/buscar"; // Redirige a la versión sin filtros
+    document.getElementById("resetFiltros").addEventListener("click", function () {        
+        window.location.href = "/product"; // Redirige a la versión sin filtros
     });
 

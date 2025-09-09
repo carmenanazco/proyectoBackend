@@ -16,7 +16,7 @@ const {
 
 router.get('/', getProducts);
 router.get('/:pid', getProduct)
-router.post('/', passportCall('jwt'), authorization('admin'), uploader.single('file') , createProduct);
+router.post('/', passportCall('jwt'), authorization('admin'), uploader.single('file'), createProduct);
 router.put('/:pid', passportCall('jwt'), authorization('admin'), updateProduct);
 router.delete('/:pid', passportCall('jwt'), authorization('admin'), deleteProduct)
 

@@ -7,9 +7,7 @@ class CartRepository{
     
     getCart = async filter => await this.dao.getBy(filter)
     updateCart = async (cid, cartToUpdate) => await this.dao.update(cid, cartToUpdate)
-    deleteCarts= async cid => await this.dao.deleteCart(cid, uid)
-
-
+    deleteCarts= async cid => await this.dao.delete(cid)
     deleteCart = async (cid, pid) => await this.dao.deleteBy(cid, pid)
 }
 

@@ -16,13 +16,7 @@ class CartsDaoMongo{
     create=async newCart=> await this.model.create(newCart)
     update=async(cid, cartToUpdate)=> await this.model.findOneAndUpdate({_id:cid}, cartToUpdate, {new: true})
     deleteBy=async(cid, pid)=>await this.model.findByIdAndUpdate({_id:cid}, { $pull: { products: { product: pid } } }, {new: true})
-
-
-    deleteCart=async(cid, uid)=>{
-        await this.model.findByIdAndDelete(cid)
-        await userModel.updateOne({ _id: uid }, { $pull: { carts: cid } });
-        return deleteCart;
-    }
+    delete=async(cid)=> await this.model.findByIdAndDelete(cid)
 
 }
 
